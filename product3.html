@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Keychain Set | Product</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="back-link">← Back to Shop</a>
+    <span class="brand-logo">1cy.studio</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Frame of Light</h1>
+  <p>Customize your keychain and film to preserve every moment.</p>
+</section>
+
+<div class="products">
+  <div class="product-image" id="productImageContainer"></div>
+</div>
+
+<div class="selection-area">
+
+  <!-- 第一步：選擇主要款式 -->
+  <h2>Select Style</h2>
+  <div class="option-group" id="baseOptions">
+    <button data-base="single" class="active">Single Film </button>
+    <button data-base="magnetic">Magnetic Keychain Set</button>
+  </div>
+
+  <!-- 第二步：升級燈光效果 -->
+  <div id="lightSection" style="display:none;">
+    <h2>Add-on Light</h2>
+    <div class="option-group" id="lightOptions">
+      <button data-light="standard" class="active">Standard </button>
+      <button data-light="romantic">Romantic Lights </button>
+    </div>
+  </div>
+
+  <!-- 第三步：照片張數 -->
+  <h2>Extra Film</h2>
+
+  <!-- 固定選項 -->
+  <div class="option-group" id="fixedExtraOptions">
+    <button data-extra="1" class="active">1 Film </button>
+    <button data-extra="2">2 Films</button>
+  </div>
+
+  <!-- 數字增減器 -->
+  <div class="quantity-selector" style="margin-top:10px;">
+    <button id="decreaseQty">-</button>
+    <input type="number" id="extraQtyInput" value="0" min="0" style="width:40px;text-align:center;">
+    <button id="increaseQty">+</button>
+    <span style="margin-left:10px;">(+$5.2 each)</span>
+  </div>
+
+  <!-- 顯示價格 -->
+  <div id="priceDisplay" class="price" style="margin-top:15px;"></div>
+
+  <!-- 滿額贈提醒 -->
+  <div id="upsellNotice" style="color:#e67e22; margin-top:10px; display:none;"></div>
+</div>
+
+<div class="cta">
+  <button>Add to Cart</button>
+</div>
+
+<script>
+  // 基本價格
+  const basePricing = { single: 6.5, magnetic: 11 };
+  const lightPricing = { standard: 0, romantic: 59 };
+  const fixedExtraPricing = { '1': 0, '2': 2.5 };
+  const extraUnitPrice = 5.2;
+
+  const productImages = {
+    single: ["images/product3.1.jpg","images/product3.2.jpg"],
+    magnetic: ["images/product3.2.jpg","images/product3.3.jpg","images/product3.4.jpg"]
+  };
+
+  const selectedOption = {
+    base: 'single',
+    light: 'standard',
+    fixedExtra: '1',
+    extraQty: 0
+  };
+
+  let currentSlide = 0;
+  let slideInterval;
+
+  function showSlides(images){
+    const container = document.getElementById('productImageContainer');
+    container.innerHTML = '';
+    images.forEach((src, idx)=>{
+      const img = document.createElement('img');
+      img.src = src;
+      if(idx===0) img.classList.add('active');
+      container.appendChild(img);
+    });
+
+    if(slideInterval) clearInterval(slideInterval);
+    currentSlide = 0;
+    slideInterval = setInterval(()=>{
+      const imgs = container.querySelectorAll('img');
+      imgs.forEach(i=>i.classList.remove('active'));
+      currentSlide = (currentSlide +1) % imgs.length;
+      imgs[currentSlide].classList.add('active');
+    }, 3000);
+  }
+
+  function updatePrice(){
+    let total = basePricing[selectedOption.base];
+
+    // Light only for magnetic
+    if(selectedOption.base==='magnetic'){
+      total += lightPricing[selectedOption.light];
+      document.getElementById('lightSection').style.display='block';
+    } else {
+      selectedOption.light='standard';
+      document.getElementById('lightSection').style.display='none';
+    }
+
+    // 固定照片選項
+    total += fixedExtraPricing[selectedOption.fixedExtra];
+
+    // 數字增減器
+    total += selectedOption.extraQty * extraUnitPrice;
+
+    document.getElementById('priceDisplay').textContent = `CAD $${total}.00`;
+
+    // 滿額贈提醒
+    const notice = document.getElementById('upsellNotice');
+    if(total >= 70){
+      notice.textContent = 'Free Bonus! You’ve unlocked a free Cuddly Bear! 🐻';
+      notice.style.display='block';
+    } else {
+      notice.style.display='none';
+    }
+
+    // 更新圖片輪播
+    showSlides(productImages[selectedOption.base]);
+  }
+
+  // Base 選擇
+  document.querySelectorAll('#baseOptions button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#baseOptions button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedOption.base = btn.dataset.base;
+      updatePrice();
+    });
+  });
+
+  // Light 選擇
+  document.querySelectorAll('#lightOptions button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#lightOptions button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedOption.light = btn.dataset.light;
+      updatePrice();
+    });
+  });
+
+  // 固定照片選項
+  document.querySelectorAll('#fixedExtraOptions button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#fixedExtraOptions button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedOption.fixedExtra = btn.dataset.extra;
+      updatePrice();
+    });
+  });
+
+  // 數字增減器
+  document.getElementById('increaseQty').addEventListener('click',()=>{
+    selectedOption.extraQty = parseInt(document.getElementById('extraQtyInput').value) +1;
+    document.getElementById('extraQtyInput').value = selectedOption.extraQty;
+    updatePrice();
+  });
+  document.getElementById('decreaseQty').addEventListener('click',()=>{
+    selectedOption.extraQty = Math.max(0, parseInt(document.getElementById('extraQtyInput').value)-1);
+    document.getElementById('extraQtyInput').value = selectedOption.extraQty;
+    updatePrice();
+  });
+  document.getElementById('extraQtyInput').addEventListener('change', ()=>{
+    selectedOption.extraQty = Math.max(0, parseInt(document.getElementById('extraQtyInput').value)||0);
+    updatePrice();
+  });
+
+  // 初始載入
+  updatePrice();
+</script>
+
+</body>
+</html>

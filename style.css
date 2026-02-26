@@ -1,0 +1,194 @@
+/* ===== index ===== */
+    .hero {
+      text-align: center;
+      padding: 50px 20px 30px;
+      background-color: #e8dfd3; /* 淡復古背景 */}
+
+    .h1 {font-size: 2.5rem;margin: 0 0 10px;}
+    h2 {font-size: 18px；margin-bottom: 12px;}
+    .p {font-size: 1.2rem; line-height: 1.6；color: #555;}
+
+  /* ===== 商品區塊 ===== */
+    .products {display: flex;flex-wrap: wrap;justify-content: center;gap: 20px;padding: 20px;}
+
+    .product-card {
+      background-color: #fff8f0;
+      border: 1px solid #d1c4b2;
+      border-radius: 10px;
+      width: 280px;
+      overflow: hidden;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s; 
+    position: relative; /* 必加！讓按鈕以這張卡片為基準 */
+    min-height: 400px;  /* 建議設定一個最小高度，避免卡片太矮擠到文字 */
+    padding-bottom: 60px; /* 重要：留出空間給底部的按鈕，才不會遮到文字 */}
+
+    .product-card:hover {
+      transform: translateY(-5px);}
+
+  /* 畫框*/
+      .index-image {width: 100%;aspect-ratio: 1 / 1;background-color: #ddd; overflow: hidden;position: relative;opacity: 1 }
+  /* 畫布*/
+      .index-image img { width: 100%; height: 100%;object-fit: cover; /* 讓照片填滿格子 */opacity: 1 !important; /* 確保照片不是透明的 */display: block;}
+
+    .product-info { padding: 15px;}
+
+    .product-info h3 { margin: 0 0 10px;font-size: 1.2rem;}
+
+    .product-info p {margin: 5px 0;font-size: 0.95rem;color: #555;}
+
+    .btn-order {
+      position: absolute; /* 絕對定位 */
+      left: 20px;         /* 距離左邊 20px (跟你的 padding 一致) */
+      bottom: 20px;       /* 距離底部 20px */
+      margin-top: 10px;
+      padding: 8px 15px;
+      background-color: #a77f5b;
+      color: #fff;
+      border-radius: 5px;
+      font-weight: bold; }
+
+    /* ===== 優勢區 ===== */
+    .advantages {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #e8dfd3;}
+
+    .advantage { max-width: 200px; }
+
+    .advantage h4 {  margin-bottom: 8px;font-size: 1.1rem;}
+
+    /* ===== 頁尾 ===== */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.9rem;
+      background-color: #f1ece3;
+      color: #555; }
+
+
+
+/* ===== product ===== */
+/*左列表 */
+.navbar {
+  width: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+  position: sticky; /* 捲動時固定在頂部 */
+  top: 0;
+  z-index: 1000;}
+
+.nav-container {
+  max-width: 720px; /* 與你的 selection-area 一致 */
+  margin: 0 auto;
+  padding: 0 20px; /* 這裡的 20px 確保左右對齊 */
+  display: flex;
+  justify-content: space-between; /* 讓返回鍵在左，品牌名在右 */
+  align-items: center;}
+
+.back-link {
+  text-decoration: none;
+  color: #a77f5b; /* 使用你原本的棕色調 */
+  font-size: 14px;
+  font-weight: 500;
+  transition: opacity 0.2s;}
+
+.back-link:hover { opacity: 0.7;}
+
+.brand-logo {
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #333;}
+
+
+
+
+
+/* ===== 全局設定 ===== */
+    body {font-family: "Georgia", serif;
+      background-color: #f6f1eb; /* 復古紙張色 */
+      color: #333;
+      margin: 0;
+      padding: 0; }
+
+    a {text-decoration: none;
+      color: inherit;}
+
+
+    /* product.html */
+    
+    /* ========= 商品主圖 ========= */
+    .product-image {
+      width: 100%;
+      aspect-ratio: 1/1;  /* 強制 1:1 */
+      background: #ddd;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;}
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.5s ease-in-out;
+      opacity: 0;}
+
+    .product-image img.active { opacity: 1;}
+
+    .selection-area {padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;}
+
+ 
+    /* ========= 選項按鈕 ========= */
+    .option-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap; }
+
+    .option-group button {
+      padding: 10px 14px;
+      border: 1px solid #2b2b2b;
+      background: transparent;
+      font-size: 14px;
+      cursor: pointer;}
+
+    .option-group button.active {
+      background: #2b2b2b;
+      color: #fff; }
+
+    /* ========= 價格 ========= */
+    .price {
+      font-size: 22px;
+      margin-top: 12px;
+      font-weight: bold;}
+
+    .note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 6px;}
+
+    /* ========= 下單按鈕 ========= */
+    .cta { margin-top: 30px;}
+
+    .cta button {
+      width: 100%;
+      padding: 14px;
+      background: #2b2b2b;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      cursor: pointer; }
+
+
+
+
+

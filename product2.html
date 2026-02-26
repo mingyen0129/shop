@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oval Photo Keychain | Product</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="back-link">← Back to Shop</a>
+    <span class="brand-logo">1cy.studio</span>
+  </div>
+</nav>
+
+<!-- 商品標題 -->
+<section class="hero">
+  <h1> Vintage Oval Photo Keychain</h1>
+  <p>Carry your hidden memories close to your heart.</p>
+</section>
+
+<!-- 商品圖片 -->
+<div class="products">
+  <div class="product-image" id="productImageContainer"></div>
+</div>
+
+<!-- 選擇區 -->
+<div class="selection-area">
+
+  <h2>Select Style</h2>
+
+  <div class="option-group" id="styleOptions">
+    <button data-style="keychain" class="active">Keychain only</button>
+    <button data-style="giftset">Gift Set</button>
+  </div>
+
+  <!-- 價格顯示（一定要獨立） -->
+  <div id="priceDisplay" class="price"></div>
+
+</div>
+
+<div class="cta">
+  <button>Add to Cart</button>
+</div>
+
+<script>
+  /* ========= 價格表 ========= */
+  const pricingTable = {
+    keychain: 399,
+    giftset: 499
+  };
+
+  /* ========= 圖片 ========= */
+  const productImages = {
+    keychain: [
+      "images/oval-keychain.jpg",
+      "images/oval-keychain2.jpg"],
+    giftset: [ "images/oval-keychain.jpg",
+      "images/oval-keychain2.jpg"]
+     
+  };
+
+  /* ========= 狀態 ========= */
+  const selectedOption = {
+    style: 'keychain'
+  };
+
+  /* ========= 輪播 ========= */
+  let currentSlide = 0;
+  let slideInterval;
+
+  function showSlides(images) {
+    const container = document.getElementById('productImageContainer');
+    container.innerHTML = '';
+
+    images.forEach((src, index) => {
+      const img = document.createElement('img');
+      img.src = src;
+      if (index === 0) img.classList.add('active');
+      container.appendChild(img);
+    });
+
+    if (slideInterval) clearInterval(slideInterval);
+    currentSlide = 0;
+
+    slideInterval = setInterval(() => {
+      const imgs = container.querySelectorAll('img');
+      imgs.forEach(img => img.classList.remove('active'));
+      currentSlide = (currentSlide + 1) % imgs.length;
+      imgs[currentSlide].classList.add('active');
+    }, 3000);
+  }
+
+  /* ========= 更新價格 + 圖片 ========= */
+  function updatePrice() {
+    const style = selectedOption.style;
+    const price = pricingTable[style];
+
+    document.getElementById('priceDisplay').textContent =
+      `CAD $${price}.00`;
+
+    showSlides(productImages[style]);
+  }
+
+  /* ========= 點擊事件 ========= */
+  document.querySelectorAll('#styleOptions button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#styleOptions button')
+        .forEach(b => b.classList.remove('active'));
+
+      btn.classList.add('active');
+      selectedOption.style = btn.dataset.style;
+
+      updatePrice();
+    });
+  });
+
+  /* 初始載入 */
+  updatePrice();
+</script>
+
+</body>
+</html>

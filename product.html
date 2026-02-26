@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Custom Film Roll | Product</title>
+  <link rel="stylesheet" href="style.css">
+
+  
+</head>
+
+<body>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="back-link">← Back to Shop</a>
+    <span class="brand-logo">1cy.studio</span>
+  </div>
+</nav>
+
+    <!-- 商品標題 -->
+  <section class="hero">
+   <h1 >Custom Film Roll</h1>
+    <p >Customize your box and texture to preserve every moment.</p>
+  </section>
+
+
+  
+    <div class="products">
+       <!-- 商品圖片輪播格子 -->
+     <div class="product-image" id="productImageContainer"></div>
+      <!-- JS 會動態插入多張圖片 -->
+    </div>
+
+  <div class="selection-area">
+      <h2>Select Style</h2>
+      <div class="option-group" id="styleOptions">
+        <button data-style="film" class="active">Film Only</button>
+        <button data-style="gift">Gift Set</button>
+      </div>
+    
+
+    <!-- Gift Box 選擇（Gift Set 才顯示） -->
+    <div id="giftBoxSection" style="display:none;">
+      <h2>Select Gift Box</h2>
+      <div class="option-group" id="giftOptions">
+        <button data-gift="camera">Camera Box</button>
+        <button data-gift="treasure">Treasure Chest</button>
+      </div>
+    </div>
+
+    <!-- Photo Quantity -->
+    <div >
+      <h2>Select Photo Quantity</h2>
+      <div class="option-group" id="quantityOptions">
+        <button data-qty="10" class="active">10 Photos</button>
+        <button data-qty="15">15 Photos</button>
+      </div>
+
+      <div class="price" id="priceDisplay">CAD $369+</div>
+      <p class="note">Bundle pricing available for two sets of 15 photos.</p>
+    </div>
+  </div>
+
+    <!-- 立即下單按鈕 -->
+    <div class="cta">
+  <a href="cart.html">
+    <button>Add to Cart</button>
+  </a>
+</div>
+
+  
+
+  <script>
+    // ========= 價格表 =========
+   const pricingTable = {
+  // 款式 1: 純膠卷 (Film Only)
+  film: { 10: 36, 15: 399 },
+
+  // 款式 2: 禮盒裝 (Gift Set) - 這裡拆解成具體的盒子種類
+  camera: { 10: 469, 15: 499 },
+  treasure: { 10: 489, 15: 529 }
+};
+
+    // ========= 圖片陣列 =========
+    const productImages = {
+      film: ["images/film1.jpg", "images/film2.jpg", "images/film3.jpg"],
+      gift: {
+        camera: ["images/gift-camera1.jpg", "images/gift-camera2.jpg"],
+        treasure: ["images/gift-treasure1.jpg", "images/gift-treasure2.jpg"]
+      }
+    };
+
+    // ========= 選項狀態 =========
+    const selectedOption = {style:'film', giftBox:null, quantity:10};
+
+    // ========= 輪播控制 =========
+    let currentSlide = 0;
+    let slideInterval;
+
+    function showSlides(images){
+      const container = document.getElementById('productImageContainer');
+      container.innerHTML = ''; // 清空舊圖
+
+      images.forEach((src, idx) => {
+        const img = document.createElement('img');
+        img.src = src;
+        if(idx===0) img.classList.add('active');
+        container.appendChild(img);
+      });
+
+      // 清除舊輪播
+      if(slideInterval) clearInterval(slideInterval);
+      currentSlide = 0;
+
+      // 每 3 秒切換
+      slideInterval = setInterval(()=>{
+        const imgs = container.querySelectorAll('img');
+        imgs.forEach(i=>i.classList.remove('active'));
+        currentSlide = (currentSlide + 1) % imgs.length;
+        imgs[currentSlide].classList.add('active');
+      }, 3000);
+    }
+
+    // ========= 更新價格和圖片 =========
+   function updatePrice() {
+  let price = null;
+  const qty = selectedOption.quantity;
+
+  if (selectedOption.style === 'film') {
+    // 1. 如果選純膠卷，直接讀取 film
+    price = pricingTable.film[qty];
+    showSlides(productImages.film);
+  } else if (selectedOption.style === 'gift') {
+    // 2. 如果選禮盒，判斷目前選了哪種盒子
+    if (selectedOption.giftBox) {
+      price = pricingTable[selectedOption.giftBox][qty];
+      showSlides(productImages.gift[selectedOption.giftBox]);
+    } else {
+      // 如果還沒選盒子，可以顯示一個起跳價或提示
+      price = null;
+    }
+  }
+
+  // 更新畫面顯示
+  const priceDisplay = document.getElementById('priceDisplay');
+  priceDisplay.textContent = price ? `CAD $${price}.00` : 'Please select a box style';
+}
+
+    // ========= Style 選擇事件 =========
+    document.querySelectorAll('#styleOptions button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#styleOptions button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+
+        selectedOption.style = btn.dataset.style;
+
+        if(selectedOption.style==='gift'){
+          giftBoxSection.style.display = 'block';
+        }else{
+          giftBoxSection.style.display = 'none';
+          selectedOption.giftBox = null;
+        }
+
+        updatePrice();
+      });
+    });
+
+    // ========= Gift Box 選擇事件 =========
+    document.querySelectorAll('#giftOptions button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#giftOptions button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+
+        selectedOption.giftBox = btn.dataset.gift;
+        updatePrice();
+      });
+    });
+
+    // ========= Photo Quantity 選擇事件 =========
+    document.querySelectorAll('#quantityOptions button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#quantityOptions button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+
+        selectedOption.quantity = btn.dataset.qty;
+        updatePrice();
+      });
+    });
+
+    updatePrice(); // 初始載入
+  </script>
+</body>
+</html>
